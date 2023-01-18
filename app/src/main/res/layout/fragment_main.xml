@@ -29,7 +29,6 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/placeholder_picture_of_day"/>
-
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
@@ -40,8 +39,11 @@
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
-                android:text="@string/image_of_the_day" />
+                android:text="@{viewModel.response}" />
+
         </FrameLayout>
+
+<!--TODO: Uncomment this once you get the reponse-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/asteroid_recycler"
