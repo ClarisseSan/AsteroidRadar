@@ -1,11 +1,14 @@
 package com.udacity.asteroidradar.network
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 
 /**Retrofit needs to have at least two things available to build API
@@ -19,7 +22,9 @@ private val moshi = Moshi.Builder()
 
 //Use Retrofit Builder with Base URl and scalar converter factor
 private val retrofit = Retrofit.Builder()
+    .addConverterFactory(ScalarsConverterFactory.create())
     .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(BASE_URL)
     .build()
 
@@ -27,9 +32,11 @@ private val retrofit = Retrofit.Builder()
 //implement the NasaApiService interface with @GetAsteroids returning PictureOfDay object
 interface NasaApiService {
 
-    @GET("planetary/apod?api_key=9MsA3RstB0RSZTAeY8VEeITJ7GfG0Mpj3eGdmPLQ")
-    suspend fun getPlanet(): PictureOfDay
+    @GET("planetary/apod")
+    suspend fun getPlanet(@Query("api_key") api_key: String): PictureOfDay
 
+    @GET("neo/rest/v1/feed")
+    suspend fun getAsteroids(@Query("api_key") api_key: String): String
 }
 
 //Create the NasaApi object using Retrofit to implement the NasaApiService
