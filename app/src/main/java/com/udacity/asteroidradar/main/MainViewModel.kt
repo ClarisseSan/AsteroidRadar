@@ -57,7 +57,7 @@ class MainViewModel : ViewModel() {
                 val parsedResult = parseAsteroidsJsonResult(JSONObject(result))
 
                 _asteroids.value = parsedResult
-                _firstAsteroid.value = parsedResult[0].codename
+                _firstAsteroid.value = parsedResult.size.toString()
 
             } catch (e: Exception) {
                 _firstAsteroid.value = "Failure: " + e.message

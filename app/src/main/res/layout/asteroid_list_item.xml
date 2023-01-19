@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="viewModel"
-            type="com.udacity.asteroidradar.main.MainViewModel" />
+            name="asteroid"
+            type="com.udacity.asteroidradar.Asteroid" />
 
     </data>
 
@@ -14,38 +15,55 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+        android:layout_margin="16dp"
+        android:padding="4dp">
 
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/txt_asteroid_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textColor="@android:color/white"
+            android:layout_marginTop="8dp"
+            android:text="@{asteroid.codename}"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@id/imageView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="3"
+            tools:text="TextView" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/txt_asteroid_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@{asteroid.closeApproachDate}"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             android:textColor="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/txt_asteroid_name"
+            app:layout_constraintTop_toBottomOf="@+id/txt_asteroid_name"
+            tools:text="TextView" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginEnd="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/txt_asteroid_name"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_status_normal"
-            android:tint="@android:color/white" />
+            app:statusIcon="@{asteroid.isPotentiallyHazardous}"
+            app:tint="@android:color/white"
+            tools:srcCompat="@drawable/ic_status_normal" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
