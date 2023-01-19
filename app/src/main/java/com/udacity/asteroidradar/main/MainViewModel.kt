@@ -5,16 +5,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.network.NasaApi
+import com.udacity.asteroidradar.network.PictureOfDay
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
     //internal mutable data for that stores the status of the most recent response
-    private val _response = MutableLiveData<String>()
+    private val _status = MutableLiveData<String>()
 
-    //external livedata for the recent status
-    val response: LiveData<String>
-        get() = _response
+    //external livedata for the recent response
+    val status: LiveData<String>
+        get() = _status
+
+
+    //planet LiveData
+    private val _planet = MutableLiveData<PictureOfDay>()
+    val planet: LiveData<PictureOfDay>
+        get() = _planet
 
 
     init {
@@ -27,9 +34,10 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 var result = NasaApi.retrofitService.getPlanet()
-                _response.value = result?.title
+                _status.value = result?.title
+                _planet.value = result
             } catch (e: java.lang.Exception) {
-                _response.value = "Failure" + e.message
+                _status.value = "Failure" + e.message
             }
         }
 

@@ -28,7 +28,8 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/placeholder_picture_of_day"/>
+                app:imageUrl="@{viewModel.planet.url}"/>
+
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
@@ -39,7 +40,7 @@
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
-                android:text="@{viewModel.response}" />
+                android:text="@{viewModel.planet.title}" />
 
         </FrameLayout>
 
