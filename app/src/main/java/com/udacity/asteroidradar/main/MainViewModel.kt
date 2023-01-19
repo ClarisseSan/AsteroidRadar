@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.udacity.asteroidradar.network.NasaApi
+import com.udacity.asteroidradar.network.PictureOfDay
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,12 +26,12 @@ class MainViewModel : ViewModel() {
     private fun getNasaData() {
         //call the object Singleton on NasaApiService
         //Enqueue means loading it on the background thread
-        NasaApi.retrofitService.getPlanet().enqueue(object : Callback<String>{
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                _response.value = response.body()
+        NasaApi.retrofitService.getPlanet().enqueue(object : Callback<PictureOfDay>{
+            override fun onResponse(call: Call<PictureOfDay>, response: Response<PictureOfDay>) {
+                _response.value = response.body()?.title
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
+            override fun onFailure(call: Call<PictureOfDay>, t: Throwable) {
                 _response.value = "Failure" + t.message
             }
 
