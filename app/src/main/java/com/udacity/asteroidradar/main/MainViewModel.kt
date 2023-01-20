@@ -1,6 +1,5 @@
 package com.udacity.asteroidradar.main
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +13,12 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class MainViewModel : ViewModel() {
+
+    enum class ApiStatus {
+        LOADING,
+        ERROR,
+        DONE
+    }
 
     //internal mutable data for that stores the status of the most recent response
     private val _status = MutableLiveData<String>()
@@ -35,8 +40,8 @@ class MainViewModel : ViewModel() {
         get() = _asteroids
 
     //asteroid_status
-    private val _statusAsteroids = MutableLiveData<String>()
-    val statusAsteroid: LiveData<String>
+    private val _statusAsteroids = MutableLiveData<ApiStatus>()
+    val statusAsteroid: LiveData<ApiStatus>
         get() = _statusAsteroids
 
     //first asteroid
@@ -52,6 +57,7 @@ class MainViewModel : ViewModel() {
 
     private fun getAsteroidData() {
         viewModelScope.launch {
+            _statusAsteroids.value = ApiStatus.LOADING
             try {
                 var result = NasaApi.retrofitService.getAsteroids(API_KEY)
                 val parsedResult = parseAsteroidsJsonResult(JSONObject(result))
@@ -59,8 +65,12 @@ class MainViewModel : ViewModel() {
                 _asteroids.value = parsedResult
                 _firstAsteroid.value = parsedResult.size.toString()
 
+                _statusAsteroids.value = ApiStatus.DONE
+
             } catch (e: Exception) {
                 _firstAsteroid.value = "Failure: " + e.message
+                _statusAsteroids.value = ApiStatus.ERROR
+                _asteroids.value = ArrayList()
             }
         }
 
