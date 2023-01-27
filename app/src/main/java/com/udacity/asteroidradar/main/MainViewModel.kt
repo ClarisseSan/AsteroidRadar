@@ -50,6 +50,12 @@ class MainViewModel : ViewModel() {
         get() = _firstAsteroid
 
 
+    //selected Asteroid that can trigger navigation
+    private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
+    val navigateToSelectedAsteroid: LiveData<Asteroid>
+        get() = _navigateToSelectedAsteroid
+
+
     init {
         getNasaImageData()
         getAsteroidData()
@@ -91,5 +97,13 @@ class MainViewModel : ViewModel() {
         }
 
 
+    }
+
+     fun displayAsteroidDetails(asteroid : Asteroid){
+        _navigateToSelectedAsteroid.value = asteroid
+    }
+
+     fun displayAsteroidDetailsComplete(){
+        _navigateToSelectedAsteroid.value = null
     }
 }
