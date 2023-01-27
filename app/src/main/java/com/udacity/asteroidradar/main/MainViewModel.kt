@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants.API_KEY
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.network.AsteroidApiFilter
 import com.udacity.asteroidradar.network.NasaApi
 import com.udacity.asteroidradar.network.PictureOfDay
 import kotlinx.coroutines.launch
@@ -58,14 +59,18 @@ class MainViewModel : ViewModel() {
 
     init {
         getNasaImageData()
-        getAsteroidData()
+        getAsteroidData(AsteroidApiFilter.SHOW_ALL)
     }
 
-    private fun getAsteroidData() {
+    private fun getAsteroidData(filter: AsteroidApiFilter) {
         viewModelScope.launch {
             _statusAsteroids.value = ApiStatus.LOADING
             try {
-                var result = NasaApi.retrofitService.getAsteroids(API_KEY)
+                var result = NasaApi.retrofitService.getAsteroids(
+                    API_KEY,
+                    filter.start_date,
+                    filter.end_date
+                )
                 val parsedResult = parseAsteroidsJsonResult(JSONObject(result))
 
                 _asteroids.value = parsedResult
@@ -99,11 +104,15 @@ class MainViewModel : ViewModel() {
 
     }
 
-     fun displayAsteroidDetails(asteroid : Asteroid){
+    fun displayAsteroidDetails(asteroid: Asteroid) {
         _navigateToSelectedAsteroid.value = asteroid
     }
 
-     fun displayAsteroidDetailsComplete(){
+    fun displayAsteroidDetailsComplete() {
         _navigateToSelectedAsteroid.value = null
+    }
+
+    fun updateFilter(filter: AsteroidApiFilter) {
+        getAsteroidData(filter)
     }
 }

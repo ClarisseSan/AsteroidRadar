@@ -4,6 +4,8 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants.BASE_URL
+import com.udacity.asteroidradar.api.getEndOfWeek
+import com.udacity.asteroidradar.api.getToday
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -36,7 +38,11 @@ interface NasaApiService {
     suspend fun getPlanet(@Query("api_key") api_key: String): PictureOfDay
 
     @GET("neo/rest/v1/feed")
-    suspend fun getAsteroids(@Query("api_key") api_key: String): String
+    suspend fun getAsteroids(
+        @Query("api_key") api_key: String,
+        @Query("start_date") start_date: String,
+        @Query("end_date") end_date: String
+    ): String
 }
 
 //Create the NasaApi object using Retrofit to implement the NasaApiService
@@ -44,4 +50,10 @@ object NasaApi {
     val retrofitService: NasaApiService by lazy {
         retrofit.create(NasaApiService::class.java)
     }
+}
+
+enum class AsteroidApiFilter(val start_date: String, val end_date: String) {
+    SHOW_TODAY(getToday(), getToday()),
+    SHOW_WEEK(getToday(), getEndOfWeek()),
+    SHOW_ALL("", "")
 }
