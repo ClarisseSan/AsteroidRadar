@@ -1,18 +1,19 @@
 package com.udacity.asteroidradar.main
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.*
-import com.udacity.asteroidradar.Asteroid
-import com.udacity.asteroidradar.Constants.API_KEY
-import com.udacity.asteroidradar.database.getDatabase
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.network.AsteroidApiFilter
 import com.udacity.asteroidradar.network.NasaApi
+import com.udacity.asteroidradar.network.NetworkAsteroid
 import com.udacity.asteroidradar.network.PictureOfDay
-import com.udacity.asteroidradar.repository.AsteroidRepository
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class BackupMainViewModel : ViewModel() {
 
     enum class ApiStatus {
         LOADING,
@@ -35,8 +36,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
     //asteroid LiveData
-    private val _asteroids = MutableLiveData<List<Asteroid>>()
-    val asteroids: LiveData<List<Asteroid>>
+    private val _asteroids = MutableLiveData<List<NetworkAsteroid>>()
+    val asteroids: LiveData<List<NetworkAsteroid>>
         get() = _asteroids
 
     //asteroid_status
@@ -51,16 +52,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
     //selected Asteroid that can trigger navigation
-    private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
-    val navigateToSelectedAsteroid: LiveData<Asteroid>
+    private val _navigateToSelectedAsteroid = MutableLiveData<NetworkAsteroid>()
+    val navigateToSelectedAsteroid: LiveData<NetworkAsteroid>
         get() = _navigateToSelectedAsteroid
-
-
-    //create the database singleton
-    private val database = getDatabase(application)
-
-    //create repository
-    private val repository = AsteroidRepository(database)
 
 
     init {
@@ -68,21 +62,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         getAsteroidData(AsteroidApiFilter.SHOW_ALL)
     }
 
-
     private fun getAsteroidData(filter: AsteroidApiFilter) {
         viewModelScope.launch {
-
             _statusAsteroids.value = ApiStatus.LOADING
-
             try {
+                var result = NasaApi.retrofitService.getAsteroids(
+                    Constants.API_KEY,
+                    filter.start_date,
+                    filter.end_date
+                )
+                val parsedResult = parseAsteroidsJsonResult(JSONObject(result))
 
-                //refresh asteroids using repository
-                repository.refreshAsteroid(filter)
-                val asteroidList = repository.asteroids
-                Log.e("Database size >>", asteroidList.value?.size.toString())
-
-                _asteroids.value = asteroidList.value
-                _firstAsteroid.value = asteroidList.value?.size.toString()
+                _asteroids.value = parsedResult
+                _firstAsteroid.value = parsedResult.size.toString()
 
                 _statusAsteroids.value = ApiStatus.DONE
 
@@ -101,8 +93,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         //call the object Singleton on NasaApiService on a background thread
         viewModelScope.launch {
             try {
-                var result = NasaApi.retrofitService.getPlanet(API_KEY)
-                _status.value = result.title
+                var result = NasaApi.retrofitService.getPlanet(Constants.API_KEY)
+                _status.value = result?.title
                 _planet.value = result
             } catch (e: java.lang.Exception) {
                 _status.value = "Failure" + e.message
@@ -112,7 +104,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun displayAsteroidDetails(asteroid: Asteroid) {
+    fun displayAsteroidDetails(asteroid: NetworkAsteroid) {
         _navigateToSelectedAsteroid.value = asteroid
     }
 
@@ -122,18 +114,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateFilter(filter: AsteroidApiFilter) {
         getAsteroidData(filter)
-    }
-
-    /**
-     * Factory for constructing DevByteViewModel with parameter
-     */
-    class Factory(val app: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return MainViewModel(app) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
-        }
     }
 }

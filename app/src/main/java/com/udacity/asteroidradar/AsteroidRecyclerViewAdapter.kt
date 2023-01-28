@@ -40,7 +40,7 @@ class AsteroidRecyclerViewAdapter(private val onClickListener: OnClickListener) 
         val asteroid = getItem(position)
 
         //set the onClickListener
-        holder.itemView.setOnClickListener{
+        holder.itemView.setOnClickListener {
             onClickListener.onClick(asteroid)
         }
 

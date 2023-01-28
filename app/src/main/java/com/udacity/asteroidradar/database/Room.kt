@@ -6,14 +6,13 @@ import androidx.room.*
 
 @Dao
 interface AsteroidDao {
-
     //returns LiveData to observe for changes
-    @Query("Select * from databaseasteroid")
-    fun getVideos(): LiveData<List<DatabaseAsteroid>>
+    @Query("Select * from DatabaseAsteroid")
+    fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
 
     //upsert
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertVideo(vararg videos: DatabaseAsteroid)
+    fun insertAsteroids(vararg videos: DatabaseAsteroid)
 }
 
 // Create the VideosDatabase class:

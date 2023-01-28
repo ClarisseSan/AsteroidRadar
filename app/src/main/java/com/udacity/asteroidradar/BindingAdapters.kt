@@ -8,6 +8,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.udacity.asteroidradar.main.MainViewModel
+import com.udacity.asteroidradar.network.NetworkAsteroid
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {

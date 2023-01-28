@@ -6,6 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants.BASE_URL
 import com.udacity.asteroidradar.api.getEndOfWeek
 import com.udacity.asteroidradar.api.getToday
+import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -20,14 +21,6 @@ import retrofit2.http.Query
 //Use the Moshi builder to create the Moshi object
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
-    .build()
-
-//Use Retrofit Builder with Base URl and scalar converter factor
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .addCallAdapterFactory(CoroutineCallAdapterFactory())
-    .baseUrl(BASE_URL)
     .build()
 
 
@@ -47,10 +40,19 @@ interface NasaApiService {
 
 //Create the NasaApi object using Retrofit to implement the NasaApiService
 object NasaApi {
-    val retrofitService: NasaApiService by lazy {
-        retrofit.create(NasaApiService::class.java)
-    }
+
+    //Use Retrofit Builder with Base URl and scalar converter factor
+    private val retrofit = Retrofit.Builder()
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addCallAdapterFactory(CoroutineCallAdapterFactory())
+        .baseUrl(BASE_URL)
+        .build()
+
+    val retrofitService = retrofit.create(NasaApiService::class.java)
+
 }
+
 
 enum class AsteroidApiFilter(val start_date: String, val end_date: String) {
     SHOW_TODAY(getToday(), getToday()),
