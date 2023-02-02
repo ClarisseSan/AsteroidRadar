@@ -34,10 +34,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         get() = _planet
 
 
-    //asteroid LiveData
-    private val _asteroids = MutableLiveData<List<Asteroid>>()
-    val asteroids: LiveData<List<Asteroid>>
-        get() = _asteroids
+
 
     //asteroid_status
     private val _statusAsteroids = MutableLiveData<ApiStatus>()
@@ -62,6 +59,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     //create repository
     private val repository = AsteroidRepository(database)
 
+    //asteroid LiveData
+    private val _asteroids = repository.asteroids
+    val asteroids: LiveData<List<Asteroid>>
+        get() = _asteroids
 
     init {
         getNasaImageData()
@@ -78,18 +79,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
                 //refresh asteroids using repository
                 repository.refreshAsteroid(filter)
-                val asteroidList = repository.asteroids
-                Log.e("Database size >>", asteroidList.value?.size.toString())
+                Log.e("Database size >>", _asteroids.value?.size.toString())
 
-                _asteroids.value = asteroidList.value
-                _firstAsteroid.value = asteroidList.value?.size.toString()
+                _firstAsteroid.value = _asteroids.value?.size.toString()
 
                 _statusAsteroids.value = ApiStatus.DONE
 
             } catch (e: Exception) {
                 _firstAsteroid.value = "Failure: " + e.message
                 _statusAsteroids.value = ApiStatus.ERROR
-                _asteroids.value = emptyList()
+                //_asteroids.value = emptyList()
             }
         }
 
