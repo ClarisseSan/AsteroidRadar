@@ -10,6 +10,9 @@ import com.udacity.asteroidradar.network.AsteroidApiFilter
 import com.udacity.asteroidradar.network.NasaApi
 import com.udacity.asteroidradar.network.PictureOfDay
 import com.udacity.asteroidradar.repository.AsteroidRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
@@ -53,21 +56,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         get() = _navigateToSelectedAsteroid
 
 
+    //This is the main scope for all coroutines launched by the MainViewModel
+    //Since we passed ViewModelJob, you can cancel all coroutines launched by uiScope by calling viewModelJob.cancel()
+    private val viewModelJob = SupervisorJob()
+    private val viewModelScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+
     //create the database singleton
     private val database = getDatabase(application)
 
     //create repository
     private val repository = AsteroidRepository(database)
 
-    //asteroid LiveData
-    private val _asteroids = repository.asteroids
-    val asteroids: LiveData<List<Asteroid>>
-        get() = _asteroids
+
 
     init {
         getNasaImageData()
         getAsteroidData(AsteroidApiFilter.SHOW_ALL)
     }
+
+    //asteroid LiveData
+    private val _asteroids = repository.asteroids
+    val asteroids: LiveData<List<Asteroid>>
+        get() = _asteroids
 
 
     private fun getAsteroidData(filter: AsteroidApiFilter) {
