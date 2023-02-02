@@ -60,7 +60,6 @@
             app:layout_constraintVertical_bias="0.0"
             tools:itemCount="16"
             android:clipToPadding="false"
-            listData="@{viewModel.asteroids}"
             tools:listitem="@layout/asteroid_list_item"/>
 
         <ImageView

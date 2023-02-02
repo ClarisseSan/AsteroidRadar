@@ -60,12 +60,6 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 }
 
 
-@BindingAdapter("listData")
-fun bindRecyclerView(recyclerView: RecyclerView, data: List<Asteroid>?) {
-    val adapter = recyclerView.adapter as AsteroidRecyclerViewAdapter
-    adapter.submitList(data)
-}
-
 @BindingAdapter("asteroidApiStatus")
 fun bindAsteroidStatus(statusImageView: ImageView, status : MainViewModel.ApiStatus?) {
     when(status){

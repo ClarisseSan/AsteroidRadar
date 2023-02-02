@@ -18,8 +18,16 @@ class MainFragment : Fragment() {
             "You can only access the viewModel after onViewCreated()"
         }
 
-        ViewModelProvider(this, MainViewModel.Factory(activity.application)).get(MainViewModel::class.java)
+        ViewModelProvider(
+            this,
+            MainViewModel.Factory(activity.application)
+        ).get(MainViewModel::class.java)
     }
+
+    private val asteroidRecyclerAdapter =
+        AsteroidRecyclerViewAdapter(AsteroidRecyclerViewAdapter.OnClickListener {
+            viewModel.displayAsteroidDetails(it)
+        })
 
 
     override fun onCreateView(
@@ -30,13 +38,18 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
-        binding.asteroidRecycler.adapter =
-            AsteroidRecyclerViewAdapter(AsteroidRecyclerViewAdapter.OnClickListener {
-                viewModel.displayAsteroidDetails(it)
-            })
+
+        binding.asteroidRecycler.adapter = asteroidRecyclerAdapter
+
 
 
         setHasOptionsMenu(true)
+
+
+        viewModel.asteroids.observe(viewLifecycleOwner, Observer {
+            asteroidRecyclerAdapter.submitList(it)
+        })
+
 
         //navigate to DetailFragment
         viewModel.navigateToSelectedAsteroid.observe(viewLifecycleOwner, Observer {
@@ -56,7 +69,7 @@ class MainFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         viewModel.updateFilter(
-            when(item.itemId){
+            when (item.itemId) {
                 R.id.show_all_menu -> AsteroidApiFilter.SHOW_ALL
                 R.id.show_rent_menu -> AsteroidApiFilter.SHOW_TODAY
                 R.id.show_buy_menu -> AsteroidApiFilter.SHOW_WEEK
