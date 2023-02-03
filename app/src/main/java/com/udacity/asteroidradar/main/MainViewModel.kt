@@ -35,11 +35,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val statusAsteroid: LiveData<ApiStatus>
         get() = _statusAsteroids
 
-    //first asteroid
-    private val _firstAsteroid = MutableLiveData<String>()
-    val firstAsteroid: LiveData<String>
-        get() = _firstAsteroid
-
 
     //selected Asteroid that can trigger navigation
     private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
@@ -90,8 +85,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 //refresh asteroids using repository
                 repository.refreshAsteroid()
                 Log.v("Database size", _asteroids.value?.size.toString())
-
-                _firstAsteroid.value = _asteroids.value?.size.toString()
 
                 _statusAsteroids.value = ApiStatus.DONE
 

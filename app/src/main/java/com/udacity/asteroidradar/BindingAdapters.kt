@@ -5,15 +5,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.udacity.asteroidradar.main.MainViewModel
-import com.udacity.asteroidradar.network.NetworkAsteroid
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
     if (isHazardous) {
         imageView.setImageResource(R.drawable.ic_status_potentially_hazardous)
+        imageView.setColorFilter(R.color.potentially_hazardous)
     } else {
         imageView.setImageResource(R.drawable.ic_status_normal)
     }
@@ -63,8 +62,8 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 
 
 @BindingAdapter("asteroidApiStatus")
-fun bindAsteroidStatus(statusImageView: ImageView, status : MainViewModel.ApiStatus?) {
-    when(status){
+fun bindAsteroidStatus(statusImageView: ImageView, status: MainViewModel.ApiStatus?) {
+    when (status) {
         MainViewModel.ApiStatus.LOADING -> {
             statusImageView.visibility = View.VISIBLE
             statusImageView.setImageResource(R.drawable.loading_animation)
@@ -78,8 +77,6 @@ fun bindAsteroidStatus(statusImageView: ImageView, status : MainViewModel.ApiSta
         MainViewModel.ApiStatus.DONE -> {
             statusImageView.visibility = View.GONE
         }
-
-
 
 
     }
