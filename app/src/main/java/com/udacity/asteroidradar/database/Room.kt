@@ -20,6 +20,9 @@ interface AsteroidDao {
     //upsert
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAsteroids(vararg videos: DatabaseAsteroid)
+
+    @Query("Delete from DatabaseAsteroid where closeApproachDate < :startDate")
+    fun deleteAsteroidsHistory(startDate: String)
 }
 
 // Create the VideosDatabase class:

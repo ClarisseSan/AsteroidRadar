@@ -65,7 +65,11 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
             val parsedResult =
                 NetworkAsteroidContainer(parseAsteroidsJsonResult(JSONObject(asteroidList)))
 
+            //insert fetched Asteroid on Database
             database.asteroidDao.insertAsteroids(*parsedResult.asDatabaseModel())
+
+            //delete asteroid history
+            database.asteroidDao.deleteAsteroidsHistory(getToday())
 
         }
 
