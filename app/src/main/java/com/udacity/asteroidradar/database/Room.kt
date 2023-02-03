@@ -11,6 +11,12 @@ interface AsteroidDao {
     @Query("Select * from DatabaseAsteroid")
     fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
 
+    @Query("Select * from DatabaseAsteroid where closeApproachDate = :startDate")
+    fun getAsteroidsToday(startDate : String) : LiveData<List<DatabaseAsteroid>>
+
+    @Query("Select * from DatabaseAsteroid where closeApproachDate = :startDate and :endDate")
+    fun getAsteroidsWeek(startDate : String, endDate : String) : LiveData<List<DatabaseAsteroid>>
+
     //upsert
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAsteroids(vararg videos: DatabaseAsteroid)

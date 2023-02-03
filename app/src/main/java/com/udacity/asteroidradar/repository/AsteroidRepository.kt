@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants.API_KEY
+import com.udacity.asteroidradar.api.getEndOfWeek
+import com.udacity.asteroidradar.api.getToday
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.database.AsteroidDatabase
 import com.udacity.asteroidradar.database.asDomainModel
@@ -40,17 +42,25 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
             it.asDomainModel()
         }
 
+    val asteroidsToday : LiveData<List<Asteroid>> =
+        Transformations.map(database.asteroidDao.getAsteroidsToday(getToday())){
+            it.asDomainModel()
+        }
+
+    val asteroidsWeek : LiveData<List<Asteroid>> =
+        Transformations.map(database.asteroidDao.getAsteroidsWeek(getToday(), getEndOfWeek())){
+            it.asDomainModel()
+        }
+
 
     //function to refresh the offline cache. Make it a suspend function since it will be called from a coroutine.
-    suspend fun refreshAsteroid(filter: AsteroidApiFilter) {
+    suspend fun refreshAsteroid() {
 
         withContext(Dispatchers.IO) {
             //Get the data from the network and then put it in the database
 
             val asteroidList = NasaApi.retrofitService.getAsteroids(
-                API_KEY,
-                filter.start_date,
-                filter.end_date
+                API_KEY
             )
             val parsedResult =
                 NetworkAsteroidContainer(parseAsteroidsJsonResult(JSONObject(asteroidList)))

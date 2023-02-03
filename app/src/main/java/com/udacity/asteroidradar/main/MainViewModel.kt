@@ -62,16 +62,25 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         getNasaImageData()
-        getAsteroidData(AsteroidApiFilter.SHOW_ALL)
+        getAsteroidData()
     }
 
+    private var _filter = MutableLiveData(AsteroidApiFilter.SHOW_ALL)
+
     //asteroid LiveData
-    private val _asteroids = repository.asteroids
+    private val _asteroids = Transformations.switchMap(_filter) {
+        when (it!!) {
+            AsteroidApiFilter.SHOW_TODAY -> repository.asteroidsToday
+            AsteroidApiFilter.SHOW_WEEK -> repository.asteroidsWeek
+            else -> repository.asteroids
+        }
+    }
+
     val asteroids: LiveData<List<Asteroid>>
         get() = _asteroids
 
 
-    private fun getAsteroidData(filter: AsteroidApiFilter) {
+    private fun getAsteroidData() {
         viewModelScope.launch {
 
             _statusAsteroids.value = ApiStatus.LOADING
@@ -79,7 +88,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             try {
 
                 //refresh asteroids using repository
-                repository.refreshAsteroid(filter)
+                repository.refreshAsteroid()
                 Log.e("Database size >>", _asteroids.value?.size.toString())
 
                 _firstAsteroid.value = _asteroids.value?.size.toString()
@@ -119,7 +128,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateFilter(filter: AsteroidApiFilter) {
-        getAsteroidData(filter)
+        _filter.postValue(filter)
     }
 
     /**

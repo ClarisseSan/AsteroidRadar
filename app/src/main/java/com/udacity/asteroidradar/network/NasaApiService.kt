@@ -32,9 +32,7 @@ interface NasaApiService {
 
     @GET("neo/rest/v1/feed")
     suspend fun getAsteroids(
-        @Query("api_key") api_key: String,
-        @Query("start_date") start_date: String,
-        @Query("end_date") end_date: String
+        @Query("api_key") api_key: String
     ): String
 }
 
@@ -53,9 +51,9 @@ object NasaApi {
 
 }
 
-
-enum class AsteroidApiFilter(val start_date: String, val end_date: String) {
-    SHOW_TODAY(getToday(), getToday()),
-    SHOW_WEEK(getToday(), getEndOfWeek()),
-    SHOW_ALL("", "")
+enum class AsteroidApiFilter() {
+    SHOW_TODAY,
+    SHOW_WEEK,
+    SHOW_ALL
 }
+
