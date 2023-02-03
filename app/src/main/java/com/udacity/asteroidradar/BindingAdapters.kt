@@ -82,3 +82,11 @@ fun bindAsteroidStatus(statusImageView: ImageView, status : MainViewModel.ApiSta
 
     }
 }
+
+/**
+ * Binding adapter used to hide the spinner once data is available
+ */
+@BindingAdapter("goneIfNotNull")
+fun goneIfNotNull(view: View, it: Any?) {
+    view.visibility = if (it != null) View.GONE else View.VISIBLE
+}
