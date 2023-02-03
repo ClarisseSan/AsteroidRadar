@@ -103,7 +103,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         //call the object Singleton on NasaApiService on a background thread
         viewModelScope.launch {
             try {
-                var result = NasaApi.retrofitService.getPlanet(API_KEY)
+                val result = NasaApi.retrofitService.getPlanet(API_KEY)
                 _planet.value = result
             } catch (e: java.lang.Exception) {
                 Log.e("Failure", e.message.toString())

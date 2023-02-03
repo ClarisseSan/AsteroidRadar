@@ -8,13 +8,13 @@ import androidx.room.*
 @Dao
 interface AsteroidDao {
     //returns LiveData to observe for changes
-    @Query("Select * from DatabaseAsteroid")
+    @Query("Select * from DatabaseAsteroid order by closeApproachDate ASC")
     fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
 
-    @Query("Select * from DatabaseAsteroid where closeApproachDate = :startDate")
+    @Query("Select * from DatabaseAsteroid where closeApproachDate = :startDate order by closeApproachDate ASC")
     fun getAsteroidsToday(startDate : String) : LiveData<List<DatabaseAsteroid>>
 
-    @Query("Select * from DatabaseAsteroid where closeApproachDate = :startDate and :endDate")
+    @Query("Select * from DatabaseAsteroid where closeApproachDate Between :startDate and :endDate order by closeApproachDate ASC")
     fun getAsteroidsWeek(startDate : String, endDate : String) : LiveData<List<DatabaseAsteroid>>
 
     //upsert
