@@ -89,15 +89,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
                 //refresh asteroids using repository
                 repository.refreshAsteroid()
-                Log.e("Database size >>", _asteroids.value?.size.toString())
+                Log.v("Database size", _asteroids.value?.size.toString())
 
                 _firstAsteroid.value = _asteroids.value?.size.toString()
 
                 _statusAsteroids.value = ApiStatus.DONE
 
             } catch (e: Exception) {
-                _firstAsteroid.value = "Failure: " + e.message
+                Log.e("Failure: " , e.message.toString())
                 _statusAsteroids.value = ApiStatus.ERROR
+
             }
         }
 

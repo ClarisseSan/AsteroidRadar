@@ -30,6 +30,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:imageUrl="@{viewModel.planet.url}"
+                android:contentDescription="@{viewModel.planet.title}"
                 tools:srcCompat="@drawable/placeholder_picture_of_day"/>
 
             <TextView
@@ -42,7 +43,7 @@
                 android:textSize="20sp"
                 android:layout_gravity="bottom"
                 android:background="#55010613"
-                android:text="@{viewModel.firstAsteroid}" />
+                android:text="@string/image_of_the_day" />
 
         </FrameLayout>
 

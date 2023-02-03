@@ -69,8 +69,8 @@ fun bindAsteroidStatus(statusImageView: ImageView, status : MainViewModel.ApiSta
         }
 
         MainViewModel.ApiStatus.ERROR -> {
-            statusImageView.visibility = View.VISIBLE
-            statusImageView.setImageResource(R.drawable.ic_connection_error)
+            //statusImageView.visibility = View.VISIBLE
+            //statusImageView.setImageResource(R.drawable.ic_connection_error)
         }
 
         MainViewModel.ApiStatus.DONE -> {
