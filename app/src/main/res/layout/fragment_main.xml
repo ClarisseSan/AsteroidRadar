@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{viewModel.planet.url}"
+                app:imageUrl="@{viewModel.planet}"
                 android:contentDescription="@{viewModel.planet.title}"
                 tools:srcCompat="@drawable/placeholder_picture_of_day"/>
 
