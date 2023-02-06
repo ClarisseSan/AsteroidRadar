@@ -54,8 +54,7 @@
             tools:tint="@android:color/black"
             app:tint="@android:color/white"
             android:padding="16dp"
-            tools:srcCompat="@drawable/ic_status_normal"
-            android:contentDescription="@string/asteroid_image" />
+            tools:srcCompat="@drawable/ic_status_normal" />
 
     </LinearLayout>
 
